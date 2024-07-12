@@ -1,0 +1,67 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="h-screen flex flex-1 items-center justify-center">
+    <div class="relative bg-white px-6 pt-10 pb-8 shadow-xl ring-1 ring-gray-900/5 sm:mx-auto sm:max-w-lg sm:rounded-lg">
+        <div class="mx-auto max-w-md">
+            <h2 class="text-2xl font-bold text-gray-900 mb-4 text-center">App 2</h2>
+            <div class="space-y-6 py-8 text-base leading-7 text-gray-600">
+              <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                  <tr>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
+                  </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                </tbody>
+              </table>
+              <div id="loadingMessage" class="text-center text-gray-500 mt-4" style="display: none;">Adicionando nova linha...</div>
+            </div>
+        </div>
+    </div>
+    <script>
+        const tableBody = document.querySelector('table tbody');
+        const loadingMessage = document.querySelector('#loadingMessage');
+
+        function addRow(status, description) {
+            const newRow = document.createElement('tr');
+            const statusColor = status === 'Receita' ? 'text-green-500' : 'text-red-500';
+            newRow.innerHTML = `
+                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium ${statusColor}">${status}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${description}</td>
+            `;
+            tableBody.appendChild(newRow);
+        }
+
+        function simulateLoading(callback) {
+            loadingMessage.style.display = 'block';
+            setTimeout(() => {
+                loadingMessage.style.display = 'none';
+                callback();
+            }, 1e3); // 1e3 = 1s, 2e3 = 2s, etc 
+        }
+
+        ['Receita', 'Despesa', 'Receita'].forEach((status, index) => {
+            addRow(status, `descrição qualquer ${index + 1}`);
+        });
+
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'visible') {
+                const numberOfRows = tableBody.children.length;
+                const statusTypes = ['Receita', 'Despesa'];
+                const randomStatus = statusTypes[Math.floor(Math.random() * statusTypes.length)];
+                const description = `descrição qualquer ${numberOfRows + 1}`;
+                
+                simulateLoading(() => {
+                    addRow(randomStatus, description);
+                });
+            }
+        });
+    </script>
+</body>
+</html>
